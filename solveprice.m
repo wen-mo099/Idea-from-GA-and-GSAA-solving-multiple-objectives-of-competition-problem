@@ -29,7 +29,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [revenue_of_insurance,revenue_of_tailer] = compute_revenue(price,xita)
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     %算法主体，求解和迭代过程%
 
@@ -38,6 +37,8 @@ column = zeros(N,1);
 for i = 1:5
     change_price(:,:,i) = [temper *0.0001* rand(N,M) column];
 end
+[revenue_of_insurance,new_revenue_of_tailer] = compute_revenue(price+change_price(:,:,1),xita)
+assess = assess_fun(revenue_of_tailer,new_revenue_of_tailer)
 
 
     

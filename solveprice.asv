@@ -7,9 +7,14 @@ global N;global M;global gamma;global qulity;global lamuta;     %¶¨Òå²ÎÊıÎªÈ«¾Ö±
 global w;global beta;global alpha;global tao;global miu;global a;
 
 N = 10;M = 5                  %¶¨ÒåÒ©Æ·ÖÖÀàÊıÄ¿
-gamma=rand(N,1);          %¶¨ÒåÆäËû²ÎÊı,gammaÎªÒ©ÎïÊôĞÔ 
-qulity=rand(N,1);        %Ò©Æ·ÖÊÁ¿ÊôĞÔ
-lamuta=rand(1,M+1);      %Ò©Æ·ÉÌÊôĞÔ
+for i = 1:N
+    gamma(i) = 0.5 + i;
+    qulity(i) = 0.5 + 0.5*i
+end
+for j = 1:M+1
+    lamuta(1,j) = 1 + 0.2*j;
+end
+
 w=0.7+0.1*rand(N,M+1);  %Ò©Æ·¹æÄ£¼Û¸ñ
 price=ones(N,M+1);
 xita=ones(N,1)-0.2;      %±¨Ïú±ÈÀı
@@ -24,7 +29,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [revenue_of_insurance,revenue_of_tailer] = compute_revenue(price,xita)
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     %Ëã·¨Ö÷Ìå£¬Çó½âºÍµü´ú¹ı³Ì%
 
@@ -33,6 +37,8 @@ column = zeros(N,1);
 for i = 1:5
     change_price(:,:,i) = [temper *0.0001* rand(N,M) column];
 end
+[revenue_of_insurance,new_revenue_of_tailer] = compute_revenue(price+change_price(:,:,1),xita)
+assess = assess_fun(revenue_of_tailer,new_revenue_of_tailer)
 
 
     
