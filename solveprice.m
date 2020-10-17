@@ -4,16 +4,17 @@ clc;clear;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                       %定义初始参数或变量初始值%
 global N;global M;global gamma;global qulity;global lamuta;     %定义参数为全局变量，以便在函数中引用
-global w;global beta;global alpha;global tao;global miu;global a;
+global w;global beta;global alpha;global tao;global miu;global a;global xita
 
 N = 10;M = 5                  %定义药品种类数目
 for i = 1:N
     gamma(i) = 0.5 + i;
-    qulity(i) = 0.5 + 0.5*i
+    qulity(i) = 1 + 0.1*i
 end
-for j = 1:M+1
+for j = 1:M
     lamuta(1,j) = 1 + 0.2*j;
 end
+lamuta(6) = 1.4
 
 w=0.7+0.1*rand(N,M+1);  %药品规模价格
 price=ones(N,M+1);
@@ -28,18 +29,42 @@ end
                        %参数和变量初始值定义完毕%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[revenue_of_insurance,revenue_of_tailer] = compute_revenue(price,xita)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     %算法主体，求解和迭代过程%
-
-temper = 10000;                                    %初始温度
+% for k = 1:1024                     %外层循环，遍历药品报销比例所有可能的取值
+%     value_of_xita = k-1;             
+%     pos_of_drug = 1;               %利用十进制转二进制方法
+%     while value_of_xita
+%         if mod(value_of_xita,2) == 1
+%             xita(pos_of_drug) = 0.5;
+%         else
+%             xita(pos_of_drug) = 0.8;
+%         end
+%         value_of_xita = fix(value_of_xita/2)
+%         pos_of_drug = pos_of_drug + 1
+%     end
+    
+temper = 100;                                    %初始温度
 column = zeros(N,1);
-for i = 1:5
-    change_price(:,:,i) = [temper *0.0001* rand(N,M) column];
+[revenue_of_insurance,revenue_of_tailer] = compute_revenue(price)
+for i = 1:30                                     %初始化进化矩阵
+    pop(:,:,i) = [temper *0.01* (rand(N,M)-0.5) column];
 end
-[revenue_of_insurance,new_revenue_of_tailer] = compute_revenue(price+change_price(:,:,1),xita)
-assess = assess_fun(revenue_of_tailer,new_revenue_of_tailer)
+
+fitness_of_pop = fitness(price,pop,temper)
+
+maximprove = 0
+for i = 1:30
+    if fitness_of_pop(i) > maximprove 
+        maximprove = fitness_of_pop(i)
+        evolve = i
+    end
+end
+price = price + pop(:,:,evolve);
 
 
+
+
+% end
     
 

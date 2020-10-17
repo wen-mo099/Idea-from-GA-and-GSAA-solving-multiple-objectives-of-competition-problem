@@ -1,0 +1,11 @@
+function fitness = fitness(price,pop,temper)
+[nowinsurance,nowtailer] = compute_revenue(price)
+
+for i = 1:30
+    [revenue_of_insurance(i),revenue_of_tailer(i,:)] = compute_revenue(price+pop(:,:,i))
+    total_revenue(i) = sum(revenue_of_tailer(i,1:5));
+end
+
+fitness = 0
+
+end

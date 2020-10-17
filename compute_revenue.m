@@ -1,6 +1,6 @@
-function [revenue_of_insurance,revenue_of_tailer] = compute_revenue(price,xita)
+function [revenue_of_insurance,revenue_of_tailer] = compute_revenue(price)
 global N;global M;global gamma;global qulity;global lamuta;
-global w;global beta;global alpha;global tao;global miu;global a;
+global w;global beta;global alpha;global tao;global miu;global a;global xita
 
 for i = 1:N
 	b(i)=beta*(1-xita(i))/miu;       %b为消费者价格敏感度
