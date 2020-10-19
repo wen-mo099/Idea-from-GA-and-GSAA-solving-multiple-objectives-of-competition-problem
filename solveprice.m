@@ -6,18 +6,21 @@ clc;clear;
 global N;global M;global gamma;global qulity;global lamuta;     %定义参数为全局变量，以便在函数中引用
 global w;global beta;global alpha;global tao;global miu;global a;global xita
 
-N = 10;M = 5                  %定义药品种类数目
+N = 10;M = 5;                  %定义药品种类数目
 for i = 1:N
     gamma(i) = 0.5 + i;
-    qulity(i) = 1 + 0.1*i
+    qulity(i) = 1 + 0.1*i;
 end
 for j = 1:M
     lamuta(1,j) = 1 + 0.2*j;
 end
-lamuta(6) = 1.4
+lamuta(6) = 1.4;
 
-w=0.7+0.1*rand(N,M+1);  %药品规模价格
-price=ones(N,M+1);
+w=ones(N,M+1)-0.3;  %药品规模价格
+
+test = ones(N,1);
+
+price=[50*ones(N,M) test];
 xita=ones(N,1)-0.2;      %报销比例
 beta=1; alpha=1; tao=0.8; miu=0.3;  %其他参数
 
@@ -46,24 +49,41 @@ end
     
 temper = 100;                                    %初始温度
 column = zeros(N,1);
-[revenue_of_insurance,revenue_of_tailer] = compute_revenue(price)
+count = 1;
+
 for i = 1:30                                     %初始化进化矩阵
     pop(:,:,i) = [temper *0.01* (rand(N,M)-0.5) column];
 end
-
-fitness_of_pop = fitness(price,pop,temper)
-
-maximprove = 0
-for i = 1:30
-    if fitness_of_pop(i) > maximprove 
-        maximprove = fitness_of_pop(i)
-        evolve = i
+max_total_revenue = 0;
+num_of_nonimprove = 0;
+while temper > 0.01
+    for t = 1:floor(20*temper)
+        [revenue_of_insurance,revenue_of_tailer] = compute_revenue(price);
+        revenue_of_all_retailer_in_program(count)  = sum(revenue_of_tailer(1:5));
+        if revenue_of_all_retailer_in_program(count) > max_total_revenue 
+            max_total_revenue = revenue_of_all_retailer_in_program(count);
+            num_of_nonimprove = 0;
+        end
+        fitness_of_pop = fitness(price,pop,temper);
+        maximprove = 0;
+        for i = 1:30
+            if fitness_of_pop(i) > maximprove 
+                maximprove = fitness_of_pop(i);
+                evolve = i;
+            end
+        end
+        price = price + pop(:,:,evolve);
+        pop = nextpop(pop,fitness_of_pop,temper);
+        count = count + 1;
+        num_of_nonimprove = num_of_nonimprove + 1;
+    end
+    temper = temper*0.9;
+    if num_of_nonimprove > 200
+        break
     end
 end
-price = price + pop(:,:,evolve);
 
-
-
+plot(revenue_of_all_retailer_in_program);
 
 % end
     
