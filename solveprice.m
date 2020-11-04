@@ -4,7 +4,7 @@ clc;clear;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                       %定义初始参数或变量初始值%
 global N;global M;global gamma;global qulity;global lamuta;     %定义参数为全局变量，以便在函数中引用
-global w;global beta;global alpha;global tao;global miu;global a;global xita
+global w;global beta;global alpha;global tao;global miu;global a;global xita;global temper;
 
 N = 10;M = 5;                  %定义药品种类数目
 for i = 1:N
@@ -18,9 +18,10 @@ lamuta(6) = 1.4;
 
 w=ones(N,M+1)-0.3;  %药品规模价格
 
-test = ones(N,1);
+test = 10*ones(N,1);
 
-price=[50*ones(N,M) test];
+price=[5*ones(N,M) test];
+
 xita=ones(N,1)-0.2;      %报销比例
 beta=1; alpha=1; tao=0.8; miu=0.3;  %其他参数
 
@@ -76,8 +77,9 @@ while temper > 0.01
         pop = nextpop(pop,fitness_of_pop,temper);
         count = count + 1;
         num_of_nonimprove = num_of_nonimprove + 1;
+ 
     end
-    temper = temper*0.9;
+    temper = temper*0.85;
     if num_of_nonimprove > 200
         break
     end
@@ -86,5 +88,6 @@ end
 plot(revenue_of_all_retailer_in_program);
 
 % end
-    
+
+
 

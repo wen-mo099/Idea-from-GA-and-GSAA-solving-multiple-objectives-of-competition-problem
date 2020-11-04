@@ -1,6 +1,6 @@
 function [revenue_of_insurance,revenue_of_tailer] = compute_revenue(price)
 global N;global M;global gamma;global qulity;global lamuta;
-global w;global beta;global alpha;global tao;global miu;global a;global xita
+global w;global beta;global alpha;global tao;global miu;global a;global xita;global temper;
 
 for i = 1:N
 	b(i)=beta*(1-xita(i))/miu;       %b为消费者价格敏感度
@@ -32,15 +32,17 @@ end
 
 drugshare = conditionshare.*tailershare;
 
+revenue_of_tailer = sum(drugshare.*(price - w));           %计算所有零售商收益
+
 for i = 1:N
     for j = 1:M
         if price(i,j)<0
-            price(i,j) = -10000;
+            revenue_of_tailer = (temper - 100)*ones(1,6);   %随温度下降，拒绝接受price为负值的概率增大
         end
     end
 end
 
-revenue_of_tailer = sum(drugshare.*(price - w));           %计算所有零售商收益
+
 
 for j = 1:M+1
     temp = 0;
